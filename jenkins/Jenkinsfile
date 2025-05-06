@@ -41,14 +41,14 @@ pipeline {
                     agent { label 'Devserver' }
                     steps {
                         echo "this is test B"
-                        sh "mvn test" // fixed typo: was "maven test"
+                        sh "mvn test"
                     }
                 }
             }
 
             post {
                 success {
-                    dir("target") {
+                    dir("test-pipeline/target/") {
                         stash name: "maven-build", includes: "*.jar"
                     }
                 }
