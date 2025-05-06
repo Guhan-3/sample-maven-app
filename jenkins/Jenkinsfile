@@ -24,7 +24,7 @@ parameters {
         }
         stage('test'){
             parallel{
-                stage{'testA'}{
+                stage('testA'){
                     steps{
                             echo "this is test A"
                     }
