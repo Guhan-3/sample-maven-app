@@ -2,16 +2,23 @@ pipeline {
     agent {
   label 'Devserver'
 }
+parameters {
+  string defaultValue: 'guna', name: 'Lastname'
+}
     options {
         skipStagesAfterUnstable()
     }
     tools {
         maven 'mymaven'
     }
+    environment {
+        Name = "Guhan"
+        }
     stages {
         stage('Build') {
             steps {
                 sh 'mvn clean package'
+                echo "hello $Name ${params.Lastname}"
             }
             post {
             success {
