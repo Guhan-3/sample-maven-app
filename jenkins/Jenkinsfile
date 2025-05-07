@@ -3,10 +3,6 @@ pipeline {
         label 'Devserver'
     }
 
-    parameters {
-        choice(name: 'select_env', choices: ['dev', 'prod'], description: 'Select environment')
-    }
-
     options {
         skipStagesAfterUnstable()
     }
@@ -59,7 +55,7 @@ pipeline {
 
         stage('Deploy_Dev') {
             when {
-                expression { params.select_env == 'dev' }
+                branch 'Develope'
                 beforeAgent true
             }
             agent { label 'Devserver' }
@@ -74,7 +70,7 @@ pipeline {
 
         stage('Deploy_Prod') {
             when {
-                expression { params.select_env == 'prod' }
+                branch 'master'
                 beforeAgent true
             }
             agent { label 'Prodserver' }
