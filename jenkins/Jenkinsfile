@@ -22,8 +22,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                script{
-                    file = load "script.grrovy"
+                script {
+                    file = load "script.groovy"
                     file.hello()
                 }
                 sh 'mvn clean package'
@@ -67,25 +67,27 @@ pipeline {
                 dir('deploy-dir') {
                     unstash 'maven-build'
                     sh 'ls -lh'  
-
                     sh 'jar -xvf my-app-1.0-SNAPSHOT.jar'
                 }
             }
         }
-         stage('Deploy_Prod') {
+
+        stage('Deploy_Prod') {
             when {
-                expression { params.select_env == 'Prod' }
+                expression { params.select_env == 'prod' }
                 beforeAgent true
             }
             agent { label 'Prodserver' }
             steps {
-                timeout(time:5,unit:'DAYS'){
+                timeout(time: 5, unit: 'DAYS') {
                     input message: 'Deployment approved?'
                 }
                 dir('deploy-dir') {
                     unstash 'maven-build'
-                    sh 'ls -lh'  
-
+                    sh 'ls -lh'
                     sh 'jar -xvf my-app-1.0-SNAPSHOT.jar'
+                }
+            }
+        }
     }
 }
