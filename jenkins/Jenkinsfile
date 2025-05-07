@@ -22,6 +22,10 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                script{
+                    file = load "script.grrovy"
+                    file.hello()
+                }
                 sh 'mvn clean package'
                 echo "hello $Name"
                 
@@ -53,7 +57,7 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy_Dev') {
             when {
                 expression { params.select_env == 'dev' }
                 beforeAgent true
@@ -68,5 +72,20 @@ pipeline {
                 }
             }
         }
+         stage('Deploy_Prod') {
+            when {
+                expression { params.select_env == 'Prod' }
+                beforeAgent true
+            }
+            agent { label 'Prodserver' }
+            steps {
+                timeout(time:5,unit:'DAYS'){
+                    input message: 'Deployment approved?'
+                }
+                dir('deploy-dir') {
+                    unstash 'maven-build'
+                    sh 'ls -lh'  
+
+                    sh 'jar -xvf my-app-1.0-SNAPSHOT.jar'
     }
 }
